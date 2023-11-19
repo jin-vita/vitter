@@ -1,5 +1,8 @@
 import styled from "styled-components";
 import React, {useState} from "react";
+import {auth} from "../firebase.ts";
+import {createUserWithEmailAndPassword, updateProfile} from "firebase/auth";
+import {useNavigate} from "react-router-dom";
 
 const Wrapper = styled.div`
   height: 100%;
@@ -40,6 +43,7 @@ const Error = styled.span`
 `
 
 export default function CreateAccount() {
+    const navigate = useNavigate()
     const [isLoading, setLoading] = useState(false)
     const [name, setName] = useState("")
     const [email, setEmail] = useState("")
@@ -55,19 +59,24 @@ export default function CreateAccount() {
             setPassword(value)
         }
     }
-    const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         // 화면이 새로 고침 되지 않도록
         e.preventDefault()
+        if (isLoading || name === "" || email === "" || password === "") return
         try {
-
+            setLoading(true)
+            // 1. create an account
+            const credentials = await createUserWithEmailAndPassword(auth, email, password,)
+            console.log(credentials.user)
+            // 2. set the name of the user
+            await updateProfile(credentials.user, {displayName: name})
+            // 3. redirect to the home page
+            navigate("/")
         } catch (e) {
-
+            // setError
         } finally {
             setLoading(false)
         }
-        // 1. create an account
-        // 2. set the name of the user
-        // 3. redirect to the home page
         console.log(name, email, password)
     }
     return <Wrapper>
