@@ -6,6 +6,8 @@ import Login from "./routes/login.tsx";
 import CreateAccount from "./routes/create-account.tsx";
 import {createGlobalStyle} from "styled-components";
 import reset from "styled-reset";
+import {useEffect, useState} from "react";
+import LoadingScreen from "./components/loading-screen.tsx";
 
 const router = createBrowserRouter([
     {
@@ -44,13 +46,22 @@ const GlobalStyles = createGlobalStyle`
     font-family: 'system-ui', -apple-system, BlinkMacSystemFont, 'Segoe UI',
     Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   }
-`;
+`
 
 function App() {
+    const [isLoading, setIsLoading] = useState(true)
+    const init = async () => {
+        // wait for firebase
+        setTimeout(() => setIsLoading(false), 200);
+        // setIsLoading(false)
+    }
+    useEffect(() => {
+        init()
+    }, [])
     return (
         <>
             <GlobalStyles/>
-            <RouterProvider router={router}/>
+            {isLoading ? <LoadingScreen/> : <RouterProvider router={router}/>}
         </>
     );
 }
