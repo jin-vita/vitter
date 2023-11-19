@@ -84,7 +84,7 @@ export default function CreateAccount() {
         console.log(name, email, password)
     }
     return <Wrapper>
-        <Title>Log into VITTER</Title>
+        <Title>Join VITTER</Title>
         <Form onSubmit={onSubmit}>
             <Input
                 onChange={onChange}
