@@ -2,6 +2,7 @@ import styled from "styled-components";
 import React, {useState} from "react";
 import {auth} from "../firebase.ts";
 import {createUserWithEmailAndPassword, updateProfile} from "firebase/auth";
+import {FirebaseError} from "firebase/app";
 import {useNavigate} from "react-router-dom";
 
 const Wrapper = styled.div`
@@ -10,7 +11,7 @@ const Wrapper = styled.div`
   flex-direction: column;
   align-items: center;
   width: 420px;
-  padding: 50px 0px;
+  padding: 50px 0;
 `
 const Title = styled.h1`
   font-size: 42px
@@ -62,6 +63,7 @@ export default function CreateAccount() {
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         // 화면이 새로 고침 되지 않도록
         e.preventDefault()
+        setError("")
         if (isLoading || name === "" || email === "" || password === "") return
         try {
             setLoading(true)
@@ -74,6 +76,8 @@ export default function CreateAccount() {
             navigate("/")
         } catch (e) {
             // setError
+            if (e instanceof FirebaseError)
+                setError(e.message)
         } finally {
             setLoading(false)
         }
